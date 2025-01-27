@@ -7,7 +7,7 @@ import random
 import time
 from collections import deque
 
-SNAKE_LEN_GOAL = 30
+SNAKE_LEN_GOAL = 300
 
 def collision_with_apple(apple_position, score):
     apple_position = [random.randrange(1,50)*10, random.randrange(1,50)*10]
@@ -87,6 +87,7 @@ class SnakeEnvironment(gym.Env):
         # Increase Snake length on eating apple
         if self.snake_head == self.apple_position:
             self.apple_position, self.score = collision_with_apple(self.apple_position, self.score)
+            print(f"Score updated: {self.score}")  # Debugging line
             self.snake_position.insert(0, list(self.snake_head))
         else:
             self.snake_position.insert(0, list(self.snake_head))
@@ -99,7 +100,7 @@ class SnakeEnvironment(gym.Env):
             cv2.putText(self.img, 'Your Score is {}'.format(self.score), (140, 250), font, 1, (255, 255, 255), 2,
                         cv2.LINE_AA)
             cv2.imshow('a', self.img)
-            self.reward += -100
+            self.reward += -10000
             self.done = True
         else:
             # Reward for moving closer to apple (distance-based)
@@ -108,11 +109,17 @@ class SnakeEnvironment(gym.Env):
 
             # Reward for eating apple (length of snake + bonus)
             if self.snake_head == self.apple_position:
-                self.reward += 100000
+                self.reward += 10000000
             else:
                 self.reward += reward_for_closeness
 
-        info = {}
+        info = {
+            "reward": self.reward,
+            "score": self.score,
+            "done": self.done,
+            "max_apple_distance": self.max_apple_distance,
+            "min_apple_distance": self.min_apple_distance
+        }
 
         head_x = self.snake_head[0]
         head_y = self.snake_head[1]
@@ -168,8 +175,16 @@ class SnakeEnvironment(gym.Env):
         # Ensure the observation is of dtype float32
         observation = np.array(observation, dtype=np.float32)
 
+        info = {
+            "reward": self.reward,
+            "score": self.score,
+            "done": self.done,
+            "max_apple_distance": self.max_apple_distance,
+            "min_apple_distance": self.min_apple_distance
+        }
+
         # Return the observation and an empty dictionary (info)
-        return observation, {}
+        return observation, info
     
     def render(self):
         return self.img
