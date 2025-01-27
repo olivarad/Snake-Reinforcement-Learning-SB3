@@ -67,16 +67,16 @@ class SnakeEnvironment(gym.Env):
             else:
                 continue
 
-        button_direction = action
-        # Change the head position based on the button direction
-        if button_direction == 1:
+        if action == 1: # Right
             self.snake_head[0] += 10
-        elif button_direction == 0:
+        elif action == 0: # Left
             self.snake_head[0] -= 10
-        elif button_direction == 2:
+        elif action == 2: # Up
             self.snake_head[1] += 10
-        elif button_direction == 3:
+        elif action == 3: # Down
             self.snake_head[1] -= 10
+        if (self.snake_head[0] == self.snake_position[1][0] and self.snake_head[1] == self.snake_position[1][1]):
+                self.reward = -100000
 
         # Increase Snake length on eating apple
         if self.snake_head == self.apple_position:
@@ -93,7 +93,7 @@ class SnakeEnvironment(gym.Env):
             cv2.putText(self.img, 'Your Score is {}'.format(self.score), (140, 250), font, 1, (255, 255, 255), 2,
                         cv2.LINE_AA)
             cv2.imshow('a', self.img)
-            self.reward = -100
+            self.reward += -100
             self.done = True
         else:
             # Reward for moving closer to apple (distance-based)
@@ -117,7 +117,7 @@ class SnakeEnvironment(gym.Env):
         self.calc_min_and_max_apple_distances()
 
         # Create observation:
-        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length] + list(self.prev_actions)
+        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length, action] + list(self.prev_actions)
         observation = np.array(observation, dtype=np.float32)
 
         # Return five values: obs, reward, terminated, truncated, info
@@ -157,7 +157,7 @@ class SnakeEnvironment(gym.Env):
             self.prev_actions.append(-1)  # to create history
 
         # create observation:
-        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length] + list(self.prev_actions)
+        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length, 0] + list(self.prev_actions)
 
         # Ensure the observation is of dtype float32
         observation = np.array(observation, dtype=np.float32)
@@ -175,6 +175,5 @@ class SnakeEnvironment(gym.Env):
         else:
             if distance_to_apple > self.max_apple_distance:
                 self.max_apple_distance = distance_to_apple
-                print(self.max_apple_distance)
             if distance_to_apple < self.min_apple_distance:
                 self.min_apple_distance = distance_to_apple
