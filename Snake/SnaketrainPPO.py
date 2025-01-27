@@ -10,7 +10,7 @@ from wandb.integration.sb3 import WandbCallback
 register(
     id='SnakeEnvironment-v4',
     entry_point='SnakeEnvironment:SnakeEnvironment',
-    max_episode_steps=500,
+    max_episode_steps=50,
 )
 
 # Config for training
