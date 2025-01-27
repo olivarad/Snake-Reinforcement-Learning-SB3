@@ -1,0 +1,10 @@
+Input to sagents in custom environments should be normalized with VecNormalize
+Some basic advice:
+
+always normalize your observation space if you can, i.e. if you know the boundaries
+
+normalize your action space and make it symmetric if it is continuous (see potential problem below) A good practice is to rescale your actions so that they lie in [-1, 1]. This does not limit you, as you can easily rescale the action within the environment.
+
+start with a shaped reward (i.e. informative reward) and a simplified version of your problem
+
+debug with random actions to check if your environment works and follows the gym interface (with check_env, see below)
