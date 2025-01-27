@@ -106,7 +106,7 @@ class SnakeEnvironment(gym.Env):
             # Reward for moving closer to apple (distance-based)
             last_distance = self.distance_to_apple
             self.distance_to_apple = np.sqrt(self.apple_delta_x**2 + self.apple_delta_y**2)
-            reward_for_closeness = 1 if last_distance > self.distance_to_apple else -1
+            reward_for_closeness = 1 if last_distance > self.distance_to_apple else -2
 
             # Reward for eating apple (length of snake + bonus)
             if self.snake_head == self.apple_position:
