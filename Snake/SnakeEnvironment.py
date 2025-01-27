@@ -69,14 +69,20 @@ class SnakeEnvironment(gym.Env):
 
         if action == 1: # Right
             self.snake_head[0] += 10
+            if (self.snake_head[0] == self.snake_position[1][0] and self.snake_head[1] == self.snake_position[1][1]): # disallow reverse inputs
+                self.snake_head[0] -= 20
         elif action == 0: # Left
             self.snake_head[0] -= 10
+            if (self.snake_head[0] == self.snake_position[1][0] and self.snake_head[1] == self.snake_position[1][1]): # disallow reverse inputs
+                self.snake_head[0] += 20
         elif action == 2: # Up
             self.snake_head[1] += 10
+            if (self.snake_head[0] == self.snake_position[1][0] and self.snake_head[1] == self.snake_position[1][1]): # disallow reverse inputs
+                self.snake_head[1] -= 20
         elif action == 3: # Down
             self.snake_head[1] -= 10
-        if (self.snake_head[0] == self.snake_position[1][0] and self.snake_head[1] == self.snake_position[1][1]):
-                self.reward = -100000
+            if (self.snake_head[0] == self.snake_position[1][0] and self.snake_head[1] == self.snake_position[1][1]): # disallow reverse inputs
+                self.snake_head[1] += 20
 
         # Increase Snake length on eating apple
         if self.snake_head == self.apple_position:
