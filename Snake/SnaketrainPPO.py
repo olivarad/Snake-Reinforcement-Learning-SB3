@@ -8,7 +8,7 @@ from wandb.integration.sb3 import WandbCallback
 
 # Registering the SnakeEnvironment
 register(
-    id='SnakeEnvironment-v0',
+    id='SnakeEnvironment-v4',
     entry_point='SnakeEnvironment:SnakeEnvironment',
     max_episode_steps=10000,
 )
@@ -17,7 +17,7 @@ register(
 config = {
     "policy_type": "MlpPolicy",
     "total_timesteps": 1000000,
-    "env_name": "SnakeEnvironment-v0",
+    "env_name": "SnakeEnvironment-v4",
 }
 
 # Initialize WandB run
@@ -48,8 +48,8 @@ class CustomWandbCallback(WandbCallback):
 
     def _on_step(self) -> bool:
         # Retrieve current reward and done flag
-        reward = self.locals.get('rewards', 0)  # Current reward for the step
-        done = self.locals.get('dones', [False])[0]  # Check if episode is done (done is a list)
+        reward = self.locals.get('self.reward', 0)  # Current reward for the step
+        done = self.locals.get('self.done', [False])[0]  # Check if episode is done (done is a list)
 
         # Update cumulative episode reward
         self.episode_reward += reward
@@ -57,9 +57,9 @@ class CustomWandbCallback(WandbCallback):
         # When the episode ends (done is True), log both episode_reward and episode_apples
         if done:
             # Assuming the environment has a method or attribute to get the current score (e.g., env.score or env.get_score())
-            score = self.locals['env'].get_attr('score')[0]  # Get the score from the environment
-            min_apple_distance = self.locals['env'].get_attr('min_apple_distance')[0]
-            max_apple_distance = self.locals['env'].get_attr('max_apple_distance')[0]
+            score = self.locals['env'].get_attr('self.score')[0]  # Get the score from the environment
+            min_apple_distance = self.locals['env'].get_attr('self.min_apple_distance')[0]
+            max_apple_distance = self.locals['env'].get_attr('self.max_apple_distance')[0]
 
             # Log both "episode_apples" and "episode_reward"
             wandb.log({

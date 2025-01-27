@@ -108,9 +108,9 @@ class SnakeEnvironment(gym.Env):
 
             # Reward for eating apple (length of snake + bonus)
             if self.snake_head == self.apple_position:
-                self.reward = 1
+                self.reward += 100000
             else:
-                self.reward = reward_for_closeness
+                self.reward += reward_for_closeness
 
         info = {}
 
