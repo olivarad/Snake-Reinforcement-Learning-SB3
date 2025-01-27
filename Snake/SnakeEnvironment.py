@@ -117,7 +117,7 @@ class SnakeEnvironment(gym.Env):
         self.calc_min_and_max_apple_distances()
 
         # Create observation:
-        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length, action] + list(self.prev_actions)
+        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length] + list(self.prev_actions)
         observation = np.array(observation, dtype=np.float32)
 
         # Return five values: obs, reward, terminated, truncated, info
@@ -157,7 +157,7 @@ class SnakeEnvironment(gym.Env):
             self.prev_actions.append(-1)  # to create history
 
         # create observation:
-        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length, 0] + list(self.prev_actions)
+        observation = [head_x, head_y, self.apple_delta_x, self.apple_delta_y, snake_length] + list(self.prev_actions)
 
         # Ensure the observation is of dtype float32
         observation = np.array(observation, dtype=np.float32)
