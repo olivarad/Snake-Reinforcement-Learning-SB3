@@ -100,16 +100,17 @@ class SnakeEnvironment(gym.Env):
             cv2.putText(self.img, 'Your Score is {}'.format(self.score), (140, 250), font, 1, (255, 255, 255), 2,
                         cv2.LINE_AA)
             cv2.imshow('a', self.img)
-            self.reward += -10000
+            self.reward -= 10
             self.done = True
         else:
             # Reward for moving closer to apple (distance-based)
-            distance_to_apple = np.sqrt(self.apple_delta_x**2 + self.apple_delta_y**2)
-            reward_for_closeness = int(707 / distance_to_apple) / 10 # 707 is about max distance
+            last_distance = self.distance_to_apple
+            self.distance_to_apple = np.sqrt(self.apple_delta_x**2 + self.apple_delta_y**2)
+            reward_for_closeness = 1 if last_distance > self.distance_to_apple else -1
 
             # Reward for eating apple (length of snake + bonus)
             if self.snake_head == self.apple_position:
-                self.reward += 10000000
+                self.reward += 10
             else:
                 self.reward += reward_for_closeness
 
@@ -163,6 +164,7 @@ class SnakeEnvironment(gym.Env):
         snake_length = len(self.snake_position)
         self.apple_delta_x = self.apple_position[0] - head_x
         self.apple_delta_y = self.apple_position[1] - head_y
+        self.distance_to_apple = np.sqrt(self.apple_delta_x**2 + self.apple_delta_y**2)
         self.calc_min_and_max_apple_distances()
 
         self.prev_actions = deque(maxlen=SNAKE_LEN_GOAL)  # however long we aspire the snake to be
@@ -189,12 +191,12 @@ class SnakeEnvironment(gym.Env):
     def render(self):
         return self.img
     def calc_min_and_max_apple_distances(self):
-        distance_to_apple = np.sqrt(self.apple_delta_x**2 + self.apple_delta_y**2)
+        self.distance_to_apple = np.sqrt(self.apple_delta_x**2 + self.apple_delta_y**2)
         if (self.min_apple_distance == -1): # initial calculation
-            self.min_apple_distance = distance_to_apple
-            self.max_apple_distance = distance_to_apple
+            self.min_apple_distance = self.distance_to_apple
+            self.max_apple_distance = self.distance_to_apple
         else:
-            if distance_to_apple > self.max_apple_distance:
-                self.max_apple_distance = distance_to_apple
-            if distance_to_apple < self.min_apple_distance:
-                self.min_apple_distance = distance_to_apple
+            if self.distance_to_apple > self.max_apple_distance:
+                self.max_apple_distance = self.distance_to_apple
+            if self.distance_to_apple < self.min_apple_distance:
+                self.min_apple_distance = self.distance_to_apple

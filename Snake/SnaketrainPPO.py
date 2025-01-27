@@ -8,7 +8,7 @@ from wandb.integration.sb3 import WandbCallback
 
 # Registering the SnakeEnvironment
 register(
-    id='SnakeEnvironment-v4',
+    id='SnakeEnvironment-v9',
     entry_point='SnakeEnvironment:SnakeEnvironment',
     max_episode_steps=1000,
 )
@@ -17,7 +17,7 @@ register(
 config = {
     "policy_type": "MlpPolicy",
     "total_timesteps": 1000000000000,
-    "env_name": "SnakeEnvironment-v4",
+    "env_name": "SnakeEnvironment-v9",
 }
 
 # Initialize WandB run
